@@ -1,14 +1,5 @@
 <template>
   <form @submit.prevent="update(todoData.id)">
-    <div class="content-ctnr">
-      <label>Todo: </label>
-      <input
-        :value="todoData.content"
-        name="todo"
-        autocomplete="off"
-        @input="updateContent"
-      />
-    </div>
     <div class="info">
       <div class="info-ctnr">
         <label>Priority: </label>
@@ -18,6 +9,16 @@
           name="priority"
           autocomplete="off"
           min="0"
+          @input="updateContent"
+        />
+      </div>
+      <div class="info-ctnr">
+        <label>Due Date: </label>
+        <input
+          class="input-date date"
+          type="date"
+          :value="todoData.dueDate"
+          name="dueDate"
           @input="updateContent"
         />
       </div>
@@ -34,6 +35,15 @@
           <option value="Leisure">Leisure</option>
         </select>
       </div>
+    </div>
+    <div class="content-ctnr">
+      <label>Todo: </label>
+      <input
+        :value="todoData.content"
+        name="todo"
+        autocomplete="off"
+        @input="updateContent"
+      />
     </div>
     <button>Update ToDo</button>
   </form>
@@ -53,12 +63,14 @@ export default {
     const todo = ref("");
     const category = ref("");
     const priority = ref(0);
+    const dueDate = ref("");
 
     function update(id) {
       const newInputs = {
         content: todo.value,
         priority: priority.value,
         category: category.value,
+        dueDate: dueDate.value,
       };
       store.updateTodo(id, newInputs);
     }
@@ -70,6 +82,9 @@ export default {
           break;
         case "priority":
           priority.value = e.target.value;
+          break;
+        case "dueDate":
+          dueDate.value = e.target.value;
           break;
         default:
           category.value = e.target.value;

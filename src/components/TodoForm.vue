@@ -1,9 +1,5 @@
 <template>
-  <form @submit.prevent="addTodo(newTodo, priority, category)">
-    <div class="content-ctnr">
-      <label>Todo: </label>
-      <input v-model="newTodo" name="newTodo" autocomplete="off" />
-    </div>
+  <form @submit.prevent="addTodo(newTodo, priority, category, dueDate)">
     <div class="info">
       <div class="info-ctnr">
         <label>Priority: </label>
@@ -16,6 +12,15 @@
         />
       </div>
       <div class="info-ctnr">
+        <label>Due Date: </label>
+        <input
+          class="input-date date"
+          type="date"
+          v-model="dueDate"
+          name="dueDate"
+        />
+      </div>
+      <div class="info-ctnr">
         <label>Category: </label>
         <select class="input-select" v-model="category" name="category">
           <option value="Work">Work</option>
@@ -23,6 +28,10 @@
           <option value="Leisure">Leisure</option>
         </select>
       </div>
+    </div>
+    <div class="content-ctnr">
+      <label>Todo: </label>
+      <input v-model="newTodo" name="newTodo" autocomplete="off" />
     </div>
     <button>Add ToDo</button>
   </form>
@@ -37,19 +46,21 @@ export default {
     const newTodo = ref("");
     const category = ref("");
     const priority = ref(1);
+    const dueDate = ref("");
     const store = useTodoListStore();
 
-    function addTodo(content, priority, category) {
+    function addTodo(content, priority, category, dueDate) {
       const newInputs = {
         content,
         priority,
         category,
+        dueDate,
       };
       store.addTodo(newInputs);
       newTodo.value = "";
     }
 
-    return { newTodo, priority, category, addTodo };
+    return { newTodo, priority, category, dueDate, addTodo };
   },
 };
 </script>
@@ -72,7 +83,8 @@ export default {
   flex: 1;
 }
 
-.input-select {
+.input-select,
+.input-date {
   background-color: white;
   color: black;
   height: 55px;

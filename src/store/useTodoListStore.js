@@ -3,7 +3,12 @@ import { defineStore } from "pinia";
 export const useTodoListStore = defineStore("todoList", {
   state: () => ({
     todoList: [],
+    workCategoryList: [],
+    homeCategoryList: [],
+    leisureCategoryList: [],
+    activeList: [],
     id: 0,
+    selectedCategory: "All",
   }),
 
   actions: {
@@ -12,44 +17,88 @@ export const useTodoListStore = defineStore("todoList", {
       this.todoList = this.todoList.sort(
         (a, b) => parseFloat(a.priority) - parseFloat(b.priority)
       );
+
+      if (this.selectedCategory === "All") {
+        this.activeList = this.todoList;
+      } else if (this.selectedCategory === newInputs.category) {
+        this.activeList.push({ id: this.id++, isEdit: false, ...newInputs });
+        this.activeList = this.activeList.sort(
+          (a, b) => parseFloat(a.priority) - parseFloat(b.priority)
+        );
+      } else {
+        return;
+      }
     },
+
     deleteTodo(itemID) {
       this.todoList = this.todoList.filter((object) => {
         return object.id !== itemID;
       });
+
+      this.activeList = this.activeList.filter((object) => {
+        return object.id !== itemID;
+      });
     },
+
     editTodo(itemID) {
-      const myIndex = this.todoList.findIndex((x) => x.id === itemID);
-      this.todoList[myIndex].isEdit = true;
+      const activeCategory =
+        this.selectedCategory === "All" ? "todoList" : "activeList";
+      const myIndex = this[activeCategory].findIndex((x) => x.id === itemID);
+      this[activeCategory][myIndex].isEdit = true;
     },
+
     updateTodo(itemID, itemData) {
-      const myIndex = this.todoList.findIndex((x) => x.id === itemID);
-      console.log(myIndex);
+      const activeCategory =
+        this.selectedCategory === "All" ? "todoList" : "activeList";
+      const myIndex = this[activeCategory].findIndex((x) => x.id === itemID);
+
+      //check if the form datas have been modified
       const isContentUpdated =
         itemData.content !== "" &&
-        this.todoList[myIndex].content !== itemData.content;
+        this[activeCategory][myIndex].content !== itemData.content;
       const isCategoryUpdated =
         itemData.category !== "" &&
-        this.todoList[myIndex].category !== itemData.category;
+        this[activeCategory][myIndex].category !== itemData.category;
       const isPriorityUpdated =
         itemData.priority !== 0 &&
-        this.todoList[myIndex].priority !== itemData.priority;
+        this[activeCategory][myIndex].priority !== itemData.priority;
+      const isDueDateUpdated =
+        itemData.dueDate !== "" &&
+        this[activeCategory][myIndex].dueDate !== itemData.dueDate;
 
+      //Update the necessary form datas that had some changes
       if (isContentUpdated) {
-        this.todoList[myIndex].content = itemData.content;
+        this[activeCategory][myIndex].content = itemData.content;
       }
 
       if (isCategoryUpdated) {
-        this.todoList[myIndex].category = itemData.category;
+        this[activeCategory][myIndex].category = itemData.category;
       }
 
       if (isPriorityUpdated) {
-        this.todoList[myIndex].priority = itemData.priority;
+        this[activeCategory][myIndex].priority = itemData.priority;
       }
 
-      this.todoList[myIndex].isEdit = false;
+      if (isDueDateUpdated) {
+        this[activeCategory][myIndex].dueDate = itemData.dueDate;
+      }
+
+      this[activeCategory][myIndex].isEdit = false;
 
       this.todoList = this.todoList.sort(
+        (a, b) => parseFloat(a.priority) - parseFloat(b.priority)
+      );
+    },
+    filterByCategory(category) {
+      this.selectedCategory = category;
+
+      if (category === "All") {
+        this.activeList = this.todoList;
+      } else {
+        this.activeList = this.todoList.filter((x) => x.category === category);
+      }
+
+      this.activeList = this.activeList.sort(
         (a, b) => parseFloat(a.priority) - parseFloat(b.priority)
       );
     },
