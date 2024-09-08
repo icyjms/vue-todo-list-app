@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="addTodo(newTodo, priority)">
+  <form @submit.prevent="addTodo(newTodo, priority, category)">
     <div class="content-ctnr">
       <label>Todo: </label>
       <input v-model="newTodo" name="newTodo" autocomplete="off" />
@@ -12,14 +12,15 @@
           v-model="priority"
           name="priority"
           autocomplete="off"
-          min="0"
+          min="1"
         />
       </div>
       <div class="info-ctnr">
         <label>Category: </label>
-        <select name="category" @change="selectedCategory">
-          <option value="1">Work</option>
-          <option value="2">Leisure</option>
+        <select class="input-select" v-model="category" name="category">
+          <option value="Work">Work</option>
+          <option value="Home">Home</option>
+          <option value="Leisure">Leisure</option>
         </select>
       </div>
     </div>
@@ -35,32 +36,46 @@ export default {
   setup() {
     const newTodo = ref("");
     const category = ref("");
-    const priority = ref(0);
+    const priority = ref(1);
     const store = useTodoListStore();
 
-    function addTodo(content, priority) {
-      store.addTodo(content, priority);
+    function addTodo(content, priority, category) {
+      const newInputs = {
+        content,
+        priority,
+        category,
+      };
+      store.addTodo(newInputs);
       newTodo.value = "";
     }
 
-    function selectedCategory() {}
-
-    return { newTodo, priority, category, addTodo, selectedCategory };
+    return { newTodo, priority, category, addTodo };
   },
 };
 </script>
 
-<style scoped>
+<style>
 .content-ctnr {
   display: flex;
   flex-direction: column;
 }
+
 .info {
   display: flex;
   justify-content: space-between;
 }
+
 .info-ctnr {
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  flex: 1;
+}
+
+.input-select {
+  background-color: white;
+  color: black;
+  height: 55px;
+  margin-left: 10px;
 }
 </style>

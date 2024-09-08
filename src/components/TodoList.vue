@@ -2,11 +2,20 @@
   <h2>ToDo List</h2>
   <ul>
     <li v-for="(todo, index) in todos" :key="index">
-      <div class="content">
-        <span>{{ `Priority: ${todo.priority}` }}</span>
-        <span>{{ `Content: ${todo.content}` }}</span>
+      <div class="card-ctnr" v-if="!todo.isEdit">
+        <div class="content">
+          <span>{{ `Priority: ${todo.priority}` }}</span>
+          <span>{{ `Category: ${todo.category}` }}</span>
+          <span>{{ `Content: ${todo.content}` }}</span>
+        </div>
+        <div class="btn-ctnr">
+          <button class="btn" @click="editTodo(todo.id)">Edit</button>
+          <button class="btn" @click="deleteTodo(todo.id)">Remove</button>
+        </div>
       </div>
-      <button @click="removeTodo(index)">Remove</button>
+      <div v-else class="card-ctnr">
+        <TodoEditForm :todo="todo" />
+      </div>
     </li>
   </ul>
   <h4 v-if="todos.length === 0">Empty list.</h4>
@@ -15,14 +24,20 @@
 <script>
 import { useTodoListStore } from "../store/useTodoListStore";
 import { storeToRefs } from "pinia";
+import TodoEditForm from "./TodoEditForm.vue";
 
 export default {
+  components: { TodoEditForm },
   setup() {
     const store = useTodoListStore();
     const { todoList } = storeToRefs(store);
-    const { deleteTodo } = store;
+    const { deleteTodo, editTodo } = store;
 
-    return { todos: todoList, removeTodo: deleteTodo };
+    return {
+      todos: todoList,
+      deleteTodo,
+      editTodo,
+    };
   },
 };
 </script>
@@ -31,5 +46,21 @@ export default {
 .content {
   display: flex;
   flex-direction: column;
+  width: 70%;
+}
+
+.btn-ctnr {
+  display: flex;
+  width: 30%;
+  justify-content: space-evenly;
+}
+
+.btn {
+  width: 70px;
+}
+
+.card-ctnr {
+  display: flex;
+  flex: 1;
 }
 </style>

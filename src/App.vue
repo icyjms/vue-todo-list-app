@@ -20,7 +20,7 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #27292d;
+  background-color: #283b61;
   color: white;
 }
 
