@@ -2,7 +2,7 @@
 
 > A simple ToDo application using Vue 3 Composition API.
 
-```
+
 ## Implemented features
 
 ```
@@ -10,6 +10,8 @@
 - Users can View, Update and Delete the Todo tasks
 - Implemented the category filter and auto sort base on priority
 
+
+```
 ## Project setup
 
 ```
