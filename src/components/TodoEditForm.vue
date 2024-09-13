@@ -1,11 +1,11 @@
 <template>
-  <form @submit.prevent="update(todoData.id)">
+  <form @submit.prevent="update(todoData.todo.id)">
     <div class="info">
       <div class="info-ctnr">
         <label>Priority: </label>
         <input
           type="number"
-          :value="todoData.priority"
+          :value="todoData.todo.priority"
           name="priority"
           autocomplete="off"
           min="0"
@@ -17,7 +17,7 @@
         <input
           class="input-date date"
           type="date"
-          :value="todoData.dueDate"
+          :value="todoData.todo.dueDate"
           name="dueDate"
           @input="updateContent"
         />
@@ -26,7 +26,7 @@
         <label>Category: </label>
         <select
           class="input-select"
-          :value="todoData.category"
+          :value="todoData.todo.category"
           name="category"
           @input="updateContent"
         >
@@ -39,7 +39,7 @@
     <div class="content-ctnr">
       <label>Todo: </label>
       <input
-        :value="todoData.content"
+        :value="todoData.todo.content"
         name="todo"
         autocomplete="off"
         @input="updateContent"
@@ -49,50 +49,43 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import { useTodoListStore } from "../store/useTodoListStore";
-import { ref, computed } from "vue";
+import { ref, defineProps } from "vue";
 
-export default {
-  props: { todo: Object },
-  setup(props) {
-    const store = useTodoListStore();
-    const todoData = computed(function () {
-      return props.todo;
-    });
-    const todo = ref("");
-    const category = ref("");
-    const priority = ref(0);
-    const dueDate = ref("");
+const store = useTodoListStore();
+const todoData = defineProps({
+  todo: Object,
+});
+const todo = ref("");
+const category = ref("");
+const priority = ref(0);
+const dueDate = ref("");
 
-    function update(id) {
-      const newInputs = {
-        content: todo.value,
-        priority: priority.value,
-        category: category.value,
-        dueDate: dueDate.value,
-      };
-      store.updateTodo(id, newInputs);
-    }
+const update = (id) => {
+  const newInputs = {
+    content: todo.value,
+    priority: priority.value,
+    category: category.value,
+    dueDate: dueDate.value,
+  };
+  store.updateTodo(id, newInputs);
+};
 
-    function updateContent(e) {
-      switch (e.target.name) {
-        case "todo":
-          todo.value = e.target.value;
-          break;
-        case "priority":
-          priority.value = e.target.value;
-          break;
-        case "dueDate":
-          dueDate.value = e.target.value;
-          break;
-        default:
-          category.value = e.target.value;
-          break;
-      }
-    }
-
-    return { todoData, updateContent, update };
-  },
+const updateContent = (e) => {
+  switch (e.target.name) {
+    case "todo":
+      todo.value = e.target.value;
+      break;
+    case "priority":
+      priority.value = e.target.value;
+      break;
+    case "dueDate":
+      dueDate.value = e.target.value;
+      break;
+    default:
+      category.value = e.target.value;
+      break;
+  }
 };
 </script>

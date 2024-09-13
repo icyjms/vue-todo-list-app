@@ -37,31 +37,25 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import { useTodoListStore } from "../store/useTodoListStore";
 
-export default {
-  setup() {
-    const newTodo = ref("");
-    const category = ref("");
-    const priority = ref(1);
-    const dueDate = ref("");
-    const store = useTodoListStore();
+const newTodo = ref("");
+const category = ref("");
+const priority = ref(1);
+const dueDate = ref("");
+const store = useTodoListStore();
 
-    function addTodo(content, priority, category, dueDate) {
-      const newInputs = {
-        content,
-        priority,
-        category,
-        dueDate,
-      };
-      store.addTodo(newInputs);
-      newTodo.value = "";
-    }
-
-    return { newTodo, priority, category, dueDate, addTodo };
-  },
+const addTodo = (content, priority, category, dueDate) => {
+  const newInputs = {
+    content,
+    priority,
+    category,
+    dueDate,
+  };
+  store.addTodo(newInputs);
+  newTodo.value = "";
 };
 </script>
 

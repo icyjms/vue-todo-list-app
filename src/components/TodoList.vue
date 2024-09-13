@@ -15,7 +15,7 @@
     </select>
   </div>
   <ul>
-    <li v-for="(todo, index) in todos" :key="index">
+    <li v-for="(todo, index) in activeList" :key="index">
       <div class="card-ctnr" v-if="!todo.isEdit">
         <div class="content">
           <span>{{ `Priority: ${todo.priority}` }}</span>
@@ -33,36 +33,23 @@
       </div>
     </li>
   </ul>
-  <h4 v-if="todos.length === 0">Empty list.</h4>
+  <h4 v-if="activeList.length === 0">Empty list.</h4>
 </template>
 
-<script>
+<script setup>
 import { useTodoListStore } from "../store/useTodoListStore";
 import { storeToRefs } from "pinia";
 import TodoEditForm from "./TodoEditForm.vue";
 import { ref } from "vue";
 
-export default {
-  components: { TodoEditForm },
-  setup() {
-    const store = useTodoListStore();
-    const { activeList } = storeToRefs(store);
-    const { deleteTodo, editTodo } = store;
-    const selectedCategory = ref("All");
+const store = useTodoListStore();
+const { activeList } = storeToRefs(store);
+const { deleteTodo, editTodo } = store;
+const selectedCategory = ref("All");
 
-    function select(e) {
-      selectedCategory.value = e.target.value;
-      store.filterByCategory(e.target.value);
-    }
-
-    return {
-      todos: activeList,
-      deleteTodo,
-      editTodo,
-      selectedCategory,
-      select,
-    };
-  },
+const select = (e) => {
+  selectedCategory.value = e.target.value;
+  store.filterByCategory(e.target.value);
 };
 </script>
 
